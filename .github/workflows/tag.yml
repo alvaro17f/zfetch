@@ -14,7 +14,8 @@ jobs:
     steps:
         - name: Check Version
           shell: bash
-          id: version
+          id: get_version
+          working-directory: "/"
           run: |
               set -euo pipefail
                 if [[ -f "LATEST" ]]; then
@@ -24,10 +25,11 @@ jobs:
             #   echo "version=$LATEST" >> $GITHUB_OUTPUT
 
         - name: Create Tag
-          if: ${{steps.version.outputs.version != github.ref }}
+          working-directory: "/"
+          if: ${{steps.get_version.outputs.version != github.ref }}
           run: |
-              echo "Creating new tag: ${{steps.version.outputs.version}}"
-              git tag "${{steps.version.outputs.version}}"
-              git push origin "${{steps.version.outputs.version}}"
+              echo "Creating new tag: ${{steps.get_version.outputs.version}}"
+              git tag "${{steps.get_version.outputs.version}}"
+              git push origin "${{steps.get_version.outputs.version}}"
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
