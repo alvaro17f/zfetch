@@ -15,14 +15,14 @@ jobs:
         - name: Check Version
           shell: bash
           id: get_version
-          working-directory: ./.
+          working-directory: /
           run: |
               set -euo pipefail
               LATEST=$(cat LATEST)
               echo "version=$LATEST" >> $GITHUB_OUTPUT
 
         - name: Create Tag
-          working-directory: ./.
+          working-directory: /
           if: ${{steps.get_version.outputs.version != github.ref }}
           run: |
               echo "Creating new tag: ${{steps.get_version.outputs.version}}"
