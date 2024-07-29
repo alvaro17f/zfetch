@@ -12,21 +12,22 @@ jobs:
   tag:
     runs-on: ubuntu-latest
     steps:
-        - name: Check Version
-          shell: bash
-          id: get_version
-          working-directory: /
-          run: |
-              set -euo pipefail
-              LATEST=$(cat LATEST)
-              echo "version=$LATEST" >> $GITHUB_OUTPUT
+    - name: Checkout
+      uses: actions/checkout@v4
 
-        - name: Create Tag
-          working-directory: /
-          if: ${{steps.get_version.outputs.version != github.ref }}
-          run: |
-              echo "Creating new tag: ${{steps.get_version.outputs.version}}"
-              git tag "${{steps.get_version.outputs.version}}"
-              git push origin "${{steps.get_version.outputs.version}}"
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Check Version
+      shell: bash
+      id: get_version
+      run: |
+        set -euo pipefail
+        LATEST=$(cat LATEST)
+        echo "version=$LATEST" >> $GITHUB_OUTPUT
+
+    - name: Create Tag
+      if: ${{steps.get_version.outputs.version != github.ref }}
+      run: |
+        echo "Creating new tag: ${{steps.get_version.outputs.version}}"
+        git tag "${{steps.get_version.outputs.version}}"
+        git push origin "${{steps.get_version.outputs.version}}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
