@@ -2,8 +2,7 @@ const std = @import("std");
 const app = @import("app/app.zig").app;
 const eql = std.mem.eql;
 const style = @import("utils/style.zig").Style;
-
-const version = "0.1.0";
+const tools = @import("utils/tools.zig");
 
 pub const Cli = struct {
     repo: []const u8,
@@ -17,7 +16,7 @@ fn printHelp() void {
     std.debug.print(
         \\
         \\ ***************************************************
-        \\ ZIX - A simple CLI tool to update your nixos system
+        \\ ZFETCH - A simple yet beautiful fetch tool
         \\ ***************************************************
         \\ -r : set repo path (default is $HOME/.dotfiles)
         \\ -n : set hostname (default is OS hostname)
@@ -31,8 +30,8 @@ fn printHelp() void {
     , .{});
 }
 
-fn printVersion() void {
-    std.debug.print("{s}\nZIX version: {s}{s}\n{s}", .{ style.Black, style.Cyan, version, style.Reset });
+fn printVersion(version: []const u8) void {
+    std.debug.print("{s}\nZFETCH version: {s}{s}\n{s}", .{ style.Black, style.Cyan, version, style.Reset });
 }
 
 fn getHostname(buffer: *[64]u8) []const u8 {
@@ -43,6 +42,8 @@ pub fn main() !void {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
     defer arena.deinit();
     const allocator = arena.allocator();
+
+    const version = try tools.readFileByLine(allocator, "LATEST");
 
     var hostname_buffer: [std.os.linux.HOST_NAME_MAX]u8 = undefined;
 
@@ -69,7 +70,7 @@ pub fn main() !void {
                         return printHelp();
                     },
                     'v' => {
-                        return printVersion();
+                        return printVersion(version);
                     },
                     'd' => cli.diff = true,
                     'u' => cli.update = true,
@@ -96,7 +97,7 @@ pub fn main() !void {
                     return printHelp();
                 }
                 if (eql(u8, argument, "version")) {
-                    return printVersion();
+                    return printVersion(version);
                 }
 
                 return std.debug.print("{s}Error: Unknown argument \"{s}\"\n{s}", .{ style.Red, argument, style.Reset });

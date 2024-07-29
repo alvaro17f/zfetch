@@ -80,3 +80,16 @@ pub fn confirm(comptime default_value: bool, comptime msg: ?[]const u8) !bool {
 pub fn boolToString(b: bool) []const u8 {
     return if (b) "true" else "false";
 }
+
+pub fn readFileByLine(allocator: std.mem.Allocator, path: []const u8) ![]const u8 {
+    const max_bytes_per_line = 4096;
+    var file = try std.fs.cwd().openFile(path, .{});
+    defer file.close();
+
+    var buffered_reader = std.io.bufferedReader(file.reader());
+    const reader = buffered_reader.reader();
+    while (try reader.readUntilDelimiterOrEofAlloc(allocator, '\n', max_bytes_per_line)) |line| {
+        return line;
+    }
+    return error.EndOfFile;
+}

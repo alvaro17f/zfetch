@@ -1,0 +1,30 @@
+
+name: ci
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches: 
+        - main
+jobs:
+  runs:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Check Version
+          shell: bash
+          id: version
+          run: |
+              set -euo pipefail
+              LATEST=$(cat LATEST)
+              echo "version=$LATEST" >> $GITHUB_OUTPUT
+
+        - name: Create Tag
+          if: ${{steps.version.outputs.version != github.ref }}
+          run: |
+              echo "Creating new tag: ${{steps.version.outputs.version}}"
+              git tag "${{steps.version.outputs.version}}"
+              git push origin "${{steps.version.outputs.version}}"
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
