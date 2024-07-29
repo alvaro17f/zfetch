@@ -9,7 +9,7 @@ on:
     branches: 
         - main
 jobs:
-  runs:
+  tag:
     runs-on: ubuntu-latest
     steps:
         - name: Check Version
@@ -17,9 +17,11 @@ jobs:
           id: version
           run: |
               set -euo pipefail
-              ls .
-              LATEST=$(cat LATEST)
-              echo "version=$LATEST" >> $GITHUB_OUTPUT
+                if [[ -f "LATEST" ]]; then
+                    echo "version=$(cat LATEST)" >> $GITHUB_OUTPUT
+                fi
+            #   LATEST=$(cat LATEST)
+            #   echo "version=$LATEST" >> $GITHUB_OUTPUT
 
         - name: Create Tag
           if: ${{steps.version.outputs.version != github.ref }}
