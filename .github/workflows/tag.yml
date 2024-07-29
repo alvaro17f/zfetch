@@ -29,6 +29,5 @@ jobs:
         echo "Creating new tag: ${{steps.get_version.outputs.version}}"
         git tag "${{steps.get_version.outputs.version}}"
         git push origin "${{steps.get_version.outputs.version}}"
-        git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
