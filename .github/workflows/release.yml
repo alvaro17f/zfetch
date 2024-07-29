@@ -4,11 +4,9 @@ permissions:
   contents: write
 
 on:
-  workflow_dispatch: 
-    inputs:
-      tag:
-        required: true
-
+  push:
+    tags:
+      - "*"
 jobs:
   build:
     strategy:
