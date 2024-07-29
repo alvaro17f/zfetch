@@ -18,11 +18,8 @@ jobs:
           working-directory: ./.
           run: |
               set -euo pipefail
-                if [[ -f "LATEST" ]]; then
-                    echo "version=$(cat LATEST)" >> $GITHUB_OUTPUT
-                fi
-            #   LATEST=$(cat LATEST)
-            #   echo "version=$LATEST" >> $GITHUB_OUTPUT
+              LATEST=$(cat LATEST)
+              echo "version=$LATEST" >> $GITHUB_OUTPUT
 
         - name: Create Tag
           working-directory: ./.
