@@ -17,7 +17,8 @@ jobs:
           id: version
           run: |
               set -euo pipefail
-              LATEST=$(cat ./../../LATEST)
+              ls .
+              LATEST=$(cat LATEST)
               echo "version=$LATEST" >> $GITHUB_OUTPUT
 
         - name: Create Tag
