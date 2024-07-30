@@ -22,12 +22,12 @@ jobs:
         set -euo pipefail
         LATEST=$(cat LATEST)
         echo "version=$LATEST" >> $GITHUB_OUTPUT
-
-    - name: Create Tag
+    - env:
+        GITHUB_TOKEN: ${{ secrets.CI }}
+      name: Create Tag
+      shell: bash
       if: ${{steps.get_version.outputs.version != github.ref }}
       run: |
         echo "Creating new tag: ${{steps.get_version.outputs.version}}"
         git tag "${{steps.get_version.outputs.version}}"
         git push origin "${{steps.get_version.outputs.version}}"
-      env:
-        CI: ${{ secrets.CI }}
