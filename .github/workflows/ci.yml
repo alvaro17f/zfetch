@@ -1,13 +1,12 @@
-name: release
+name: ci
 
 permissions:
   contents: write
 
 on:
-  workflow_run:
-    workflows: ["tag"]
-    types:
-      - completed
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
 jobs:
   build:
     strategy:
@@ -15,7 +14,6 @@ jobs:
       matrix:
         target: [ x86_64-linux ]
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -94,7 +92,7 @@ jobs:
 
     - name: Release
       uses: softprops/action-gh-release@v2
-      if: contains(github.ref, 'refs/tags/')
+      if: startsWith(github.ref, 'refs/tags/')
       with:
         files: zig-out/bin/*
         body: ${{ steps.build_changelog.outputs.changelog }}
