@@ -64,8 +64,8 @@ jobs:
                 "labels": ["docs"]
               },
               {
-                "title": "## 🔨 Chore",
-                "labels": ["chore"]
+                "title": "## 🔨 Build",
+                "labels": ["build", "chore"]
               },
               {
                 "title": "## ⚡️ Performance",
